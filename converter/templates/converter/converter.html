@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cryptocurrency Converter Calculator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        .converter-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .text-center{
+            background-color: yellow;
+            padding-bottom: 20px;
+            padding-top: 20px;
+            margin-bottom: 40px;
+        }
+        .switch-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+    </style>
+    <script>
+        function switchCurrencies() {
+            const fromCurrency = document.getElementById('id_from_currency');
+            const toCurrency = document.getElementById('id_to_currency');
+            const temp = fromCurrency.value;
+            fromCurrency.value = toCurrency.value;
+            toCurrency.value = temp;
+        }
+    </script>
+</head>
+<body>
+    <div class="container converter-container">
+        <h1 class="text-center">Cryptocurrency Converter Calculator</h1>
+        <form method="post"> 
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.amount.label_tag }}
+                {{ form.amount }}
+            </div>
+            <div class="form-row">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        {{ form.from_currency.label_tag }}
+                        {{ form.from_currency }}
+                    </div>
+                </div>
+                <div class="col-md-2 switch-button">
+                    <button type="button" class="btn btn-outline-dark" onclick="switchCurrencies()">⇆</button>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        {{ form.to_currency.label_tag }}
+                        {{ form.to_currency }}
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-dark">Convert</button>
+        </form>
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        {% if rate %}
+    <h2 class="text-center mt-4">Conversion Result</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>From Currency</th>
+                <th>To Currency</th>
+                <th>Rate</th>
+                <th>Converted Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ form.from_currency.value }} ({{ from_symbol }})</td>
+                <td>{{ form.to_currency.value }} ({{ to_symbol }})</td>
+                <td>1 {{ from_symbol }} = {{ rate|floatformat:8 }} {{ to_symbol }}</td>
+                <td>{{ converted_amount|floatformat:8 }} {{ to_symbol }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endif %}
+
+    </div>
+</body>
+</html>
